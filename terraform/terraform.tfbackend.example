@@ -1,0 +1,8 @@
+# Terraform Backend Configuration
+# Copy this file to terraform.tfbackend and update with your actual values
+
+bucket       = "terraform-remote-backend-bucket-<ACCOUNT_ID>"
+key          = "terraform.tfstate"
+region       = "us-east-1"
+use_lockfile = true
+

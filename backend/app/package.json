@@ -1,0 +1,14 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Andre Neves",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

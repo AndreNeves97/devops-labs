@@ -1,0 +1,7 @@
+# Ignore sensitive Terraform files from Cursor indexing
+terraform/variables.tf
+
+# You can add other sensitive files here as needed
+# terraform/*.tfvars
+# terraform/*.tfvars.json
+
