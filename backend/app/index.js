@@ -5,7 +5,8 @@ const app = express();
 app.get('/backend', (req, res) => {
   res.send({
     message: 'Hello World!',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    teste: 'teste'
   });
 });
 
