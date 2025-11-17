@@ -86,3 +86,57 @@ Build and push the images to ECR:
 docker buildx build --platform linux/amd64,linux/arm64 -t <REPOSITORY>:latest --push backend/app
 docker buildx build --platform linux/amd64,linux/arm64 -t <REPOSITORY>:latest --push frontend/app
 ```
+
+
+## GitOps with ArgoCD
+
+This project uses GitOps methodology with ArgoCD for continuous deployment. The GitOps repository containing Kubernetes manifests is located at: [https://github.com/AndreNeves97/devops-labs-gitops](https://github.com/AndreNeves97/devops-labs-gitops)
+
+### How It Works
+
+1. **Application Changes**: When code changes are pushed to the `main` branch of either the `backend` or `frontend` application, the CI/CD pipeline is triggered.
+
+2. **Image Build & Push**: The pipeline:
+   - Builds a new Docker image with the commit SHA as the tag
+   - Pushes the image to Amazon ECR
+
+3. **GitOps Manifest Update**: The pipeline automatically:
+   - Checks out the GitOps repository
+   - Updates the Kustomize manifest with the new image tag
+   - Commits and pushes the changes to the GitOps repository
+
+4. **ArgoCD Sync**: ArgoCD, which is synced with the GitOps repository, detects the changes and automatically:
+   - Syncs the new image version to the Kubernetes cluster
+   - Updates the running deployments with the new container images
+
+### Pipeline Workflow
+
+The CI/CD pipelines (`.github/workflows/backend-pipeline.yml` and similar for frontend) perform the following steps:
+
+1. Checkout application code
+2. Configure AWS credentials
+3. Login to Amazon ECR
+4. Build and push Docker image to ECR (tagged with commit SHA)
+5. Checkout GitOps repository
+6. Update Kustomize manifest with new image tag:
+   ```bash
+   kustomize edit set image <REGISTRY>/<REPOSITORY>=<REGISTRY>/<REPOSITORY>:<IMAGE_TAG>
+   ```
+7. Commit and push changes to GitOps repository
+
+### ArgoCD Setup
+
+ArgoCD should be configured to watch the GitOps repository and automatically sync changes. The ArgoCD application should be configured to:
+
+- **Repository URL**: `https://github.com/AndreNeves97/devops-labs-gitops`
+- **Path**: `devops-labs` (or the appropriate path in the repository)
+- **Sync Policy**: Auto-sync enabled for automatic deployment
+
+
+### Benefits of GitOps Approach
+
+- **Version Control**: All Kubernetes manifests are version-controlled in Git
+- **Audit Trail**: Every deployment change is tracked through Git commits
+- **Rollback Capability**: Easy rollback by reverting Git commits
+- **Consistency**: Single source of truth for cluster state
+- **Automation**: Automatic synchronization reduces manual intervention
