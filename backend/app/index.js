@@ -6,9 +6,6 @@ app.get('/backend', (req, res) => {
   res.send({
     message: 'Hello World!',
     timestamp: new Date().toISOString(),
-    teste: 'teste',
-    teste2: 'teste2',
-    teste3: 'teste3',
   });
 });
 
